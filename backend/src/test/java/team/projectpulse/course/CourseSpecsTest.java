@@ -64,9 +64,9 @@ class CourseSpecsTest {
         given(this.root.<String>get("courseDescription")).willReturn(this.column);
         given(this.criteriaBuilder.lower(this.column)).willReturn(this.loweredColumn);
 
-        CourseSpecs.containsCourseDescription("CAPSTONE PROJECTS").toPredicate(this.root, this.query, this.criteriaBuilder);
+        CourseSpecs.containsCourseDescription("CAPSTONE DESIGN").toPredicate(this.root, this.query, this.criteriaBuilder);
 
-        verify(this.criteriaBuilder).like(this.loweredColumn, "%capstone projects%");
+        verify(this.criteriaBuilder).like(this.loweredColumn, "%capstone design%");
     }
 
 }
