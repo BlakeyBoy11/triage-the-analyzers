@@ -16,6 +16,14 @@
         <!-- D2: narrowed below, not dropped. -->
         <exclude name="UncommentedEmptyConstructor"/>
         <exclude name="UnnecessaryConstructor"/>
+        <!-- D4: GuardLogStatement is off. Project Pulse logs through SLF4J with {} placeholders, which
+             already defer building the message until the level is enabled. The rule fires because an
+             argument is a method call, and every one of the 4 baselined calls passes a plain getter
+             (student.getEmail(), templates.size(), result.sent(), authentication.getName()). Three are
+             at info or error, which are on in every profile, so a guard would never skip anything; the
+             fourth (debug) would save one getter call per login. Revisit if a log argument does real
+             work (serialization, a query, a stream). -->
+        <exclude name="GuardLogStatement"/>
     </rule>
 
     <!-- D2: UncommentedEmptyConstructor and UnnecessaryConstructor do not apply to JPA classes
