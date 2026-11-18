@@ -15,8 +15,6 @@ public class Result {
     private Object data; // The response payload
 
 
-    public Result() {
-    }
 
     public Result(boolean flag, Integer code, String message) {
         this.flag = flag;
