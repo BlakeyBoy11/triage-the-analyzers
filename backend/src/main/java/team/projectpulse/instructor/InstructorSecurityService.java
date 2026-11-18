@@ -40,7 +40,7 @@ public class InstructorSecurityService {
     public boolean isCurrentUserAdminOfInstructorCourse(Integer instructorId) {
         Integer adminIdFromJwt = this.userUtils.getUserId();
         Instructor instructor = this.instructorRepository.findById(instructorId).orElse(null);
-        if (instructor == null) {
+        if (instructor == null) { // NOPMD - SimplifyBooleanReturns: kept as an explicit deny, the "fail closed" branch the class Javadoc promises; folding it into && hides it
             return false;
         }
         return instructor.getCourses().stream()
