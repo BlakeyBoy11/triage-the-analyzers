@@ -5,7 +5,11 @@ import org.springframework.data.jpa.domain.Specification;
 
 import java.util.Locale;
 
-public class CourseSpecs {
+public final class CourseSpecs {
+
+    private CourseSpecs() {
+        // Static factory methods for Specifications only; never instantiated.
+    }
 
     public static Specification<Course> containsCourseName(String providedCourseName) {
         return (root, query, criteriaBuilder) ->
