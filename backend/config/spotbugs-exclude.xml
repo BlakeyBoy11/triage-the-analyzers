@@ -7,4 +7,21 @@
 
      Unlike the baseline, this file may grow, but every entry is a reviewed decision. -->
 <FindBugsFilter>
+    <!-- D1: EI_EXPOSE_REP and EI_EXPOSE_REP2 are off for the whole project (decided 2026-11, slice 1 triage).
+         Every one of the 219 baselined findings was one of three kinds:
+           1. A JPA association or collection on an @Entity (Course.getSections, Team.getStudents, ...).
+              Hibernate tracks changes through the very collection instance the getter returns; a getter
+              that copies, or a setter that copies, replaces the PersistentBag/Set, so changes are lost and
+              an orphanRemoval collection throws "no longer referenced by the owning entity instance".
+           2. A Spring singleton passed to a constructor (a controller holding its service). Sharing the
+              reference is the point of dependency injection.
+           3. A component of a DTO or record that is built for one request and serialized by Jackson.
+         None of the fields is a java.util.Date or an array, the mutable value types this rule exists to
+         protect. Revisit if a class starts holding one of those, or caching state across requests. -->
+    <Match>
+        <Or>
+            <Bug pattern="EI_EXPOSE_REP"/>
+            <Bug pattern="EI_EXPOSE_REP2"/>
+        </Or>
+    </Match>
 </FindBugsFilter>
