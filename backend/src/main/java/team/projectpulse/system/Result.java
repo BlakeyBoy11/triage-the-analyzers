@@ -16,6 +16,7 @@ public class Result {
 
 
     public Result() {
+        // Jackson needs a no-arg constructor to deserialize this type; the other constructors would hide the default one.
     }
 
     public Result(boolean flag, Integer code, String message) {

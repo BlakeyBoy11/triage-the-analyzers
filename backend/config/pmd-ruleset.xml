@@ -13,5 +13,36 @@
          xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.io/ruleset_2_0_0.xsd">
     <description>PMD quickstart, with Project Pulse's decisions.</description>
     <rule ref="rulesets/java/quickstart.xml">
+        <!-- D2: narrowed below, not dropped. -->
+        <exclude name="UncommentedEmptyConstructor"/>
+        <exclude name="UnnecessaryConstructor"/>
+        <!-- D4: GuardLogStatement is off. Project Pulse logs through SLF4J with {} placeholders, which
+             already defer building the message until the level is enabled. The rule fires because an
+             argument is a method call, and every one of the 4 baselined calls passes a plain getter
+             (student.getEmail(), templates.size(), result.sent(), authentication.getName()). Three are
+             at info or error, which are on in every profile, so a guard would never skip anything; the
+             fourth (debug) would save one getter call per login. Revisit if a log argument does real
+             work (serialization, a query, a stream). -->
+        <exclude name="GuardLogStatement"/>
+    </rule>
+
+    <!-- D2: UncommentedEmptyConstructor and UnnecessaryConstructor do not apply to JPA classes
+         (@Entity, @Embeddable, @MappedSuperclass), and are enforced everywhere else.
+         Reason: JPA requires every entity to have a no-arg constructor, which Hibernate calls
+         reflectively. All 36 baselined findings on JPA classes were that constructor. Writing it out is
+         deliberate even when it is the only constructor: if someone later adds a constructor with
+         arguments, an implicit default constructor disappears and the failure shows up only at runtime.
+         The XPath matches the annotation by simple name so it also works without type resolution. -->
+    <rule ref="category/java/documentation.xml/UncommentedEmptyConstructor">
+        <properties>
+            <property name="violationSuppressXPath"
+                      value="./ancestor::ClassDeclaration[1][ModifierList/Annotation[@SimpleName = ('Entity', 'Embeddable', 'MappedSuperclass')]]"/>
+        </properties>
+    </rule>
+    <rule ref="category/java/codestyle.xml/UnnecessaryConstructor">
+        <properties>
+            <property name="violationSuppressXPath"
+                      value="./ancestor::ClassDeclaration[1][ModifierList/Annotation[@SimpleName = ('Entity', 'Embeddable', 'MappedSuperclass')]]"/>
+        </properties>
     </rule>
 </ruleset>
